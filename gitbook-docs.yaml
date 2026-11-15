@@ -1,0 +1,10 @@
+site:
+  title: OSCP Notes
+  structure:
+    - type: space
+      key: oscp
+      title: OSCP Notes
+      path: oscp
+      default: true
+      content:
+        directory: ./
