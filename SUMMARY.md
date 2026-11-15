@@ -106,6 +106,7 @@
   * [Constrained and Resource-Based Constrained Delegation](3.AD-Exploit/3.7.Kerberos-Delegation.md)
   * [AD Enumeration Tools](3.AD-Exploit/3.8.AD-Enumeration-Tools.md)
 * [4.Privilege-Escalation](4.privilege-escalation/README.md)
+  * [Automated Enumeration Tools](4.privilege-escalation/automated-enumeration-tools.md)
   * [Privilege Escalation Windows](4.Privilege-Escalation/4.1.Privilege-Escalation-Windows.md)
   * [Privilege Escalation Linux](4.Privilege-Escalation/4.2.Privilege-Escalation-Linux.md)
   * [GTFOBins - Linux Privilege Escalation](4.Privilege-Escalation/4.3.GTFOBins-Linux.md)
