@@ -2,44 +2,42 @@
 
 ## Table of Contents
 
-- [Quick Reference](#quick-reference)
-- [Host Discovery](#host-discovery)
-- [Nmap](#nmap)
-  - [Basic Scans](#basic-scan-one-liner)
-  - [UDP Scan](#udp-scan-one-liner)
-  - [Stealth Scanning](#stealth-scanning)
-  - [Vulnerability Scan](#vulnerability-scan-one-liner)
-  - [Firewall Evasion](#firewall-evasion-one-liner)
-- [Masscan](#masscan-one-liner)
-- [Rustscan](#rustscan-one-liner)
-- [NetExec](#netexec-one-liner)
-- [Tips](#tips)
-  - [Speed Optimization](#speed-optimization)
-  - [Common Options](#common-options)
-  - [Timing Templates](#timing-templates-explained)
-- [Output Parsing](#output-parsing)
-- [Common Port Lists](#common-port-lists)
-- [IPv6 Scanning](#ipv6-scanning)
-- [Firewall/IDS Evasion](#firewallids-evasion)
-- [Troubleshooting](#troubleshooting)
+* [Quick Reference](Port-Scanning.md#quick-reference)
+* [Host Discovery](Port-Scanning.md#host-discovery)
+* [Nmap](Port-Scanning.md#nmap)
+  * [Basic Scans](Port-Scanning.md#basic-scan-one-liner)
+  * [UDP Scan](Port-Scanning.md#udp-scan-one-liner)
+  * [Stealth Scanning](Port-Scanning.md#stealth-scanning)
+  * [Vulnerability Scan](Port-Scanning.md#vulnerability-scan-one-liner)
+  * [Firewall Evasion](Port-Scanning.md#firewall-evasion-one-liner)
+* [Masscan](Port-Scanning.md#masscan-one-liner)
+* [Rustscan](Port-Scanning.md#rustscan-one-liner)
+* [NetExec](Port-Scanning.md#netexec-one-liner)
+* [Tips](Port-Scanning.md#tips)
+  * [Speed Optimization](Port-Scanning.md#speed-optimization)
+  * [Common Options](Port-Scanning.md#common-options)
+  * [Timing Templates](Port-Scanning.md#timing-templates-explained)
+* [Output Parsing](Port-Scanning.md#output-parsing)
+* [Common Port Lists](Port-Scanning.md#common-port-lists)
+* [IPv6 Scanning](Port-Scanning.md#ipv6-scanning)
+* [Firewall/IDS Evasion](Port-Scanning.md#firewallids-evasion)
+* [Troubleshooting](Port-Scanning.md#troubleshooting)
 
----
+***
 
 ## Quick Reference
 
-> **เลือก command ตามสถานการณ์**
-
-| สถานการณ์ | Command |
-|-----------|---------|
-| 🚀 **Quick scan** | `nmap -sC -sV -Pn $rhost` |
-| 🔍 **Full port** | `nmap -p- --min-rate 10000 $rhost` |
-| 📡 **UDP top 100** | `sudo nmap -sU --top-ports 100 $rhost` |
-| 🕵️ **Stealth** | `sudo nmap -sS -T2 -f $rhost` |
-| 💥 **Vuln scan** | `nmap --script vuln $rhost` |
-| 🌐 **Network sweep** | `nmap -sn $cidr` |
-| ⚡ **Fastest** | `rustscan -a $rhost -- -sC -sV` |
-| 🔥 **Mass scan** | `sudo masscan -p1-65535 $rhost --rate=10000` |
-| 🖥️ **Windows hosts** | `nxc smb $cidr` |
+| สถานการณ์             | Command                                      |
+| --------------------- | -------------------------------------------- |
+| 🚀 **Quick scan**     | `nmap -sC -sV -Pn $rhost`                    |
+| 🔍 **Full port**      | `nmap -p- --min-rate 10000 $rhost`           |
+| 📡 **UDP top 100**    | `sudo nmap -sU --top-ports 100 $rhost`       |
+| 🕵️ **Stealth**       | `sudo nmap -sS -T2 -f $rhost`                |
+| 💥 **Vuln scan**      | `nmap --script vuln $rhost`                  |
+| 🌐 **Network sweep**  | `nmap -sn $cidr`                             |
+| ⚡ **Fastest**         | `rustscan -a $rhost -- -sC -sV`              |
+| 🔥 **Mass scan**      | `sudo masscan -p1-65535 $rhost --rate=10000` |
+| 🖥️ **Windows hosts** | `nxc smb $cidr`                              |
 
 ### OSCP Quick Workflow
 
@@ -56,7 +54,7 @@ nmap -sC -sV -p $ports $rhost -oN detail.nmap
 sudo nmap -sU --top-ports 50 $rhost -oN udp.nmap &
 ```
 
----
+***
 
 ## Host Discovery
 
@@ -126,16 +124,16 @@ for proto in smb rdp winrm ssh; do nxc $proto $cidr 2>/dev/null | grep -E "^\d|S
 
 ### Quick Reference - Host Discovery
 
-| Method | Command | Best For |
-|--------|---------|----------|
-| ICMP Ping | `nmap -sn $cidr` | General discovery |
-| ARP Scan | `sudo arp-scan -l` | Local network (most reliable) |
-| TCP SYN | `nmap -sn -PS22,80,443 $cidr` | When ICMP blocked |
-| TCP ACK | `nmap -sn -PA80 $cidr` | Bypass stateless firewall |
-| UDP | `nmap -sn -PU53,161 $cidr` | Find DNS/SNMP hosts |
-| NetExec | `nxc smb $cidr` | Windows/AD environments |
+| Method    | Command                       | Best For                      |
+| --------- | ----------------------------- | ----------------------------- |
+| ICMP Ping | `nmap -sn $cidr`              | General discovery             |
+| ARP Scan  | `sudo arp-scan -l`            | Local network (most reliable) |
+| TCP SYN   | `nmap -sn -PS22,80,443 $cidr` | When ICMP blocked             |
+| TCP ACK   | `nmap -sn -PA80 $cidr`        | Bypass stateless firewall     |
+| UDP       | `nmap -sn -PU53,161 $cidr`    | Find DNS/SNMP hosts           |
+| NetExec   | `nxc smb $cidr`               | Windows/AD environments       |
 
----
+***
 
 ## Nmap
 
@@ -337,28 +335,28 @@ nxc smb $rhost -u '' -p '' --shares --users --groups 2>/dev/null
 
 ### Speed Optimization
 
-| Option | Description |
-| ------ | ----------- |
-| `-T4` | Aggressive timing (faster) |
-| `-T5` | Insane timing (fastest, may miss ports) |
-| `--min-rate 10000` | Minimum packet rate |
-| `--max-retries 1` | Reduce retries for speed |
+| Option             | Description                             |
+| ------------------ | --------------------------------------- |
+| `-T4`              | Aggressive timing (faster)              |
+| `-T5`              | Insane timing (fastest, may miss ports) |
+| `--min-rate 10000` | Minimum packet rate                     |
+| `--max-retries 1`  | Reduce retries for speed                |
 
 ### Common Options
 
-| Option | Description |
-| ------ | ----------- |
-| `-sV` | Version detection |
-| `-sC` | Default scripts |
-| `-sS` | SYN stealth scan |
-| `-sT` | TCP connect scan |
-| `-sU` | UDP scan |
-| `-Pn` | Skip host discovery |
-| `-A` | Aggressive scan (OS, version, scripts, traceroute) |
-| `-O` | OS detection |
-| `-oN` | Normal output |
-| `-oG` | Greppable output |
-| `-oA` | All formats |
+| Option | Description                                        |
+| ------ | -------------------------------------------------- |
+| `-sV`  | Version detection                                  |
+| `-sC`  | Default scripts                                    |
+| `-sS`  | SYN stealth scan                                   |
+| `-sT`  | TCP connect scan                                   |
+| `-sU`  | UDP scan                                           |
+| `-Pn`  | Skip host discovery                                |
+| `-A`   | Aggressive scan (OS, version, scripts, traceroute) |
+| `-O`   | OS detection                                       |
+| `-oN`  | Normal output                                      |
+| `-oG`  | Greppable output                                   |
+| `-oA`  | All formats                                        |
 
 ### Useful Script Categories
 
@@ -378,16 +376,16 @@ sudo nmap --script "vuln and safe" -p $port $rhost
 
 ### Timing Templates Explained
 
-| Template | Name | Packets/sec | Use Case |
-| -------- | ---- | ----------- | -------- |
-| `-T0` | Paranoid | 1 every 5 min | IDS evasion (very slow) |
-| `-T1` | Sneaky | 1 every 15 sec | IDS evasion |
-| `-T2` | Polite | 1 every 0.4 sec | Reduce network load |
-| `-T3` | Normal | Default | Standard scanning |
-| `-T4` | Aggressive | Parallel, fast | CTF/Lab environment |
-| `-T5` | Insane | Max speed | Fast but may miss ports |
+| Template | Name       | Packets/sec     | Use Case                |
+| -------- | ---------- | --------------- | ----------------------- |
+| `-T0`    | Paranoid   | 1 every 5 min   | IDS evasion (very slow) |
+| `-T1`    | Sneaky     | 1 every 15 sec  | IDS evasion             |
+| `-T2`    | Polite     | 1 every 0.4 sec | Reduce network load     |
+| `-T3`    | Normal     | Default         | Standard scanning       |
+| `-T4`    | Aggressive | Parallel, fast  | CTF/Lab environment     |
+| `-T5`    | Insane     | Max speed       | Fast but may miss ports |
 
----
+***
 
 ## Output Parsing
 
@@ -431,7 +429,7 @@ xsltproc scan.xml -o scan.html
 nmap --webxml -oX - $rhost | xsltproc - -o scan.html
 ```
 
----
+***
 
 ## Common Port Lists
 
@@ -466,7 +464,7 @@ ports_oscp="21,22,23,25,53,80,88,110,111,135,139,143,389,443,445,464,587,636,993
 sudo nmap -sV -sC -p $ports_oscp $rhost -oA oscp_scan
 ```
 
----
+***
 
 ## IPv6 Scanning
 
@@ -496,7 +494,7 @@ ip -6 neigh show
 alive6 eth0
 ```
 
----
+***
 
 ## Firewall/IDS Evasion
 
@@ -546,20 +544,20 @@ sudo nmap --spoof-mac 00:11:22:33:44:55 $rhost
 sudo nmap --badsum $rhost
 ```
 
----
+***
 
 ## Troubleshooting
 
 ### Common Issues
 
-| Problem | Solution |
-| ------- | -------- |
-| "Host seems down" | Use `-Pn` to skip ping |
-| Slow scanning | Use `-T4` or `--min-rate` |
-| Missing ports | Scan all ports `-p-` |
-| Permission denied | Use `sudo` for SYN scan |
-| UDP scan slow | Limit ports `-p U:53,67,68,69,123,161` |
-| No route to host | Check network/firewall |
+| Problem           | Solution                               |
+| ----------------- | -------------------------------------- |
+| "Host seems down" | Use `-Pn` to skip ping                 |
+| Slow scanning     | Use `-T4` or `--min-rate`              |
+| Missing ports     | Scan all ports `-p-`                   |
+| Permission denied | Use `sudo` for SYN scan                |
+| UDP scan slow     | Limit ports `-p U:53,67,68,69,123,161` |
+| No route to host  | Check network/firewall                 |
 
 ### Verify Connectivity
 
@@ -587,12 +585,11 @@ sudo nmap -d -p 80 $rhost
 sudo nmap --reason -p 80 $rhost
 ```
 
----
+***
 
 ## See Also
 
-- **[IT-Ports/](IT-Ports/)** - Service-specific enumeration (SMB, SSH, HTTP, etc.)
-- **[OT-Ports/](OT-Ports/)** - Industrial/SCADA protocol scanning
-- **[AD Exploitation](../3.AD-Exploit/3.1.AD-Exploitation.md)** - Post-scan AD enumeration
-- **[Web Application Analysis](../7.Web-Exploit/7.0.Web-Application-Analysis.md)** - Web service scanning
-
+* [**IT-Ports/**](IT-Ports/) - Service-specific enumeration (SMB, SSH, HTTP, etc.)
+* [**OT-Ports/**](OT-Ports/) - Industrial/SCADA protocol scanning
+* [**AD Exploitation**](../3.AD-Exploit/3.1.AD-Exploitation.md) - Post-scan AD enumeration
+* [**Web Application Analysis**](../7.Web-Exploit/7.0.Web-Application-Analysis.md) - Web service scanning
