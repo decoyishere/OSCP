@@ -2,6 +2,7 @@
 
 * [README](README.md)
 * [0.Quick-Reference](0.quick-reference/README.md)
+  * [Start](0.quick-reference/start.md)
   * [🚨 Emergency Commands](0.Quick-Reference/Emergency-Commands.md)
   * [File Transfer Cheatsheet](0.Quick-Reference/File-Transfer.md)
   * [Pentest Checklist](0.Quick-Reference/Pentest-Checklist.md)
